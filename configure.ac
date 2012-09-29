@@ -88,6 +88,17 @@ AC_CHECK_LIB([tcl], [Tcl_CreateInterp], [], [
  AC_MSG_ERROR([cannot build openlava without tcl8.*])
 ])])])])])])])])])])])])])])])
 
+
+case "${target_os}" in
+  *solaris*)
+    AC_CHECK_LIB(socket, socket)
+    AC_CHECK_LIB(nsl, inet_addr)
+esac
+
+AC_CHECK_LIB(ncurses, wgetstr, [],[
+ AC_CHECK_LIB(curses, wgetstr, [],[
+  AC_MSG_ERROR([cannot build openlava without *curses])])])
+
 AC_CONFIG_FILES([
 	Makefile                 \
 	config/Makefile          \

@@ -31,7 +31,7 @@ lsload_SOURCES = lsload.c load.c
 lsload_LDADD = ../lib/liblsf.a ../intlib/liblsfint.a
 
 lsmon_SOURCES = lsmon.c  
-lsmon_LDADD = load.o ../lib/liblsf.a ../intlib/liblsfint.a -lncurses
+lsmon_LDADD = load.o ../lib/liblsf.a ../intlib/liblsfint.a
 
 lsplace_SOURCES = lsplace.c  
 lsplace_LDADD = ../lib/liblsf.a ../intlib/liblsfint.a
