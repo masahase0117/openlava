@@ -88,6 +88,7 @@ AC_CHECK_LIB([tcl], [Tcl_CreateInterp], [], [
  AC_MSG_ERROR([cannot build openlava without tcl8.*])
 ])])])])])])])])])])])])])])])
 
+AC_HEADER_DIRENT
 
 case "${target_os}" in
   *solaris*)
