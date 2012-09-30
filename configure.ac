@@ -89,6 +89,9 @@ AC_CHECK_LIB([tcl], [Tcl_CreateInterp], [], [
 ])])])])])])])])])])])])])])])
 
 AC_HEADER_DIRENT
+AC_CHECK_HEADERS([mntent.h], break, [
+ AC_CHECK_HEADERS([sys/mntent.h], break, [
+ AC_MSG_ERROR([cannot build openlava without mntent.h])])])
 
 case "${target_os}" in
   *solaris*)
