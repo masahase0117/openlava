@@ -103,6 +103,8 @@ AC_CHECK_LIB(ncurses, wgetstr, [],[
  AC_CHECK_LIB(curses, wgetstr, [],[
   AC_MSG_ERROR([cannot build openlava without *curses])])])
 
+AC_FUNC_MKTIME
+
 AC_CONFIG_FILES([
 	Makefile                 \
 	config/Makefile          \
