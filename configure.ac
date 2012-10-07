@@ -142,7 +142,8 @@ AC_CONFIG_FILES([
 	config/openlava.csh      \
 	config/openlava          \
 	config/openlava.setup    \
-	config/openlava.sh]
+	config/openlava.sh       \
+	config/svc-openlava]
 )
 
 AC_OUTPUT

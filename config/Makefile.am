@@ -13,9 +13,10 @@ include $(top_srcdir)/common.mk
 etcdir = $(prefix)/etc
 etc_DATA = openlava.sh openlava.csh \
 	lsf.conf lsf.cluster.openlava lsf.shared lsf.task \
-	lsb.hosts lsb.params lsb.queues lsb.users 
+	lsb.hosts lsb.params lsb.queues lsb.users \
+	lsf.xml
 
-etc_SCRIPTS = openlava
+etc_SCRIPTS = openlava svc-openlava
 
 # Create the working directory where the working files are
 # kept.
