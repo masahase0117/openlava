@@ -18,7 +18,4 @@ bhist_LDADD = ../cmd/cmd.job.o \
 if !CYGWIN
 bhist_LDADD += -lnsl
 endif
-if SOLARIS
-bhist_LDADD += -lsocket -lnsl
-endif
 

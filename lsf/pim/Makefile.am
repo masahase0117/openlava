@@ -15,10 +15,6 @@ pim_SOURCES += pim.linux.c
 endif
 pim_LDADD = ../lib/liblsf.a ../intlib/liblsfint.a
 
-if SOLARIS
-pim_LDADD += -lnsl -lsocket
-endif
-
 etags:
 	etags ../*.h *.[hc] ../intlib/*.[hc] ../lib/*.[hc] \
 	../res/*.[hc] ../lstools/*.[hc]

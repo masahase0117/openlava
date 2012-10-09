@@ -21,9 +21,6 @@ lim_SOURCES += lim.linux.c
 endif
 
 lim_LDADD =  ../lib/liblsf.a ../intlib/liblsfint.a 
-if SOLARIS
-lim_LDADD += -lsocket -lnsl
-endif
 
 etags:
 	etags ../*.h *.[hc] ../intlib/*.[hc] ../lib/*.[hc] \
