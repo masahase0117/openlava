@@ -18,12 +18,19 @@ fi
 
 . $LSF_ENVDIR/lsf.conf
 
-# install the openlava startup file
-cp $LSF_ENVDIR/openlava /etc/init.d
+if [ ! -d /lib/svc ]; then
+    # install the openlava startup file
+    cp $LSF_ENVDIR/openlava /etc/init.d
 
-cp $LSF_ENVDIR/openlava.sh /etc/profile.d
-cp $LSF_ENVDIR/openlava.csh /etc/profile.d
+    cp $LSF_ENVDIR/openlava.sh /etc/profile.d
+    cp $LSF_ENVDIR/openlava.csh /etc/profile.d
 
-# configure the lava service to start at boot
-/sbin/chkconfig --add openlava
-/sbin/chkconfig openlava on
+    # configure the lava service to start at boot
+    /sbin/chkconfig --add openlava
+    /sbin/chkconfig openlava on
+else
+    cp $LSF_ENVDIR/svc-openlava /lib/svc/method
+    cp $LSF_ENVDIR/lsf.xml /lib/svc/manifest/application
+    svcadm restart manifest-import
+    svcadm enable lsf
+fi
