@@ -72,7 +72,8 @@ Open source Workload Management system based on Platform LSF.
 				</loctext>
 			</common_name>
 			<documentation>
-				<manpage title='mrtg' section='1' />
+				<doc_link name='openlava'
+					uri='http://www.openlava.org/' />
 			</documentation>
 		</template>
 
