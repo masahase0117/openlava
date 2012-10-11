@@ -246,9 +246,6 @@ readLoad(int kernelPerm)
     myHostPtr->loadMask = 0;
 
     TIMEIT(0, sendLoad(), "sendLoad()");
-#if defined(__sun__)
-    runLoadCollector();
-#endif
 
     for(i = 0; i < allInfo.numIndx; i++) {
 
