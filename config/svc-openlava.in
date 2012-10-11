@@ -4,8 +4,6 @@
 # Run by svc
 . /lib/svc/share/smf_include.sh
 
-SMF_FMRI="svc:/application/lsf:openlava-20"
-
 getproparg() {
     val=`svcprop -p $1 $SMF_FMRI`
     [ -n "$val" ] && echo $val
@@ -19,10 +17,10 @@ export OPENLAVA_TOP=@prefix@
 #
 kill_daemons()
 {
-    kill `ps ax|grep lim|grep -v grep`
-    kill `ps ax|grep res|grep -v grep`
-    kill `ps ax|grep sbatchd|grep -v grep`
-    kill `ps ax|grep mbatchd|grep -v grep`
+    kill `ps -A|grep lim|grep -v grep`
+    kill `ps -A|grep res|grep -v grep`
+    kill `ps -A|grep sbatchd|grep -v grep`
+    kill `ps -A|grep mbatchd|grep -v grep`
 }
 
 
