@@ -145,7 +145,6 @@ main(int argc, char **argv)
                 break;
             case 'C':
                 putEnv("RECONFIG_CHECK","YES");
-                fputs("\n", stderr);
                 fputs(_LS_VERSION_, stderr);
                 lim_CheckMode = 1;
                 lim_debug = 2;
@@ -837,7 +836,10 @@ initSock(int checkMode)
         return -1;
     }
 
-    limSock = chanServSocket_(SOCK_DGRAM, lim_port, -1,  0);
+    /* Tell the channel code to set the reuse option
+     * for the socket.
+     */
+    limSock = chanServSocket_(SOCK_DGRAM, lim_port, -1, CHAN_OP_SOREUSE);
     if (limSock < 0) {
         ls_syslog(LOG_ERR, "\
 %s: unable to create datagram socket port %d; another LIM running?: %M ",
@@ -908,18 +910,17 @@ getTclLsInfo(void)
     static struct tclLsInfo *tclLsInfo;
     int i;
 
-    if ((tclLsInfo = (struct tclLsInfo *) malloc (sizeof (struct tclLsInfo )))
-        == NULL) {
-        ls_syslog(LOG_ERR, I18N_FUNC_FAIL_M, __func__, "malloc");
+    if ((tclLsInfo = calloc(1, sizeof (struct tclLsInfo ))) == NULL) {
+        ls_syslog(LOG_ERR, "%s: %m", __func__);
         return NULL;
     }
 
-    if ((tclLsInfo->indexNames = (char **)malloc (allInfo.numIndx *
-                                                  sizeof (char *))) == NULL) {
-        ls_syslog(LOG_ERR, I18N_FUNC_FAIL_M, __func__, "malloc");
+    if ((tclLsInfo->indexNames = calloc(allInfo.numIndx,
+                                        sizeof(char *))) == NULL) {
+        ls_syslog(LOG_ERR, "%s: %s", __func__);
         return NULL;
     }
-    for (i=0; i < allInfo.numIndx; i++) {
+    for (i = 0; i < allInfo.numIndx; i++) {
         tclLsInfo->indexNames[i] = allInfo.resTable[i].name;
     }
     tclLsInfo->numIndx = allInfo.numIndx;
@@ -928,8 +929,7 @@ getTclLsInfo(void)
     tclLsInfo->stringResBitMaps = shortInfo.stringResBitMaps;
     tclLsInfo->numericResBitMaps = shortInfo.numericResBitMaps;
 
-    return (tclLsInfo);
-
+    return tclLsInfo;
 }
 
 
@@ -965,7 +965,6 @@ startPIM(int argc, char **argv)
 
     for (i = 1; i < NSIG; i++)
         Signal_(i, SIG_DFL);
-
 
     for (i = 1; i < argc; i++)
         pargv[i] = argv[i];

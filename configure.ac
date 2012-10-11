@@ -28,7 +28,7 @@ esac
 # Initialize the automake
 AM_INIT_AUTOMAKE
 
-# Expirimental scheduling module
+# Experimental scheduling module
 # Leave for future 
 #AM_CONDITIONAL([SCHED_EXPERIMENTAL], [false])
 
@@ -145,7 +145,8 @@ AC_CONFIG_FILES([
 	config/openlava          \
 	config/openlava.setup    \
 	config/openlava.sh       \
-	config/svc-openlava]
+	config/svc-openlava      \
+	examples/Makefile]
 )
 
 AC_OUTPUT
