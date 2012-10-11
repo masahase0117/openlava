@@ -29,5 +29,6 @@ config/openlava
 config/openlava.csh
 config/openlava.setup
 config/openlava.sh
+config/svc-openlava
 config.guess
 config.sub
