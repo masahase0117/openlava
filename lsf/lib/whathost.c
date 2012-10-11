@@ -35,7 +35,8 @@
 
 #if HAVE_MNTENT_H
 # include <mntent.h>
-#else
+#endif
+#if HAVE_SYS_MNTENT_H
 # include <sys/mntent.h>
 #endif
 
