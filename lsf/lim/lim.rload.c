@@ -29,13 +29,7 @@
 #include "../lib/mls.h"
 #include <unistd.h>
 #include "../lib/lproto.h"
-
-
-#define  EXP3   0.716531311
-#define  EXP4   0.77880078
-#define  EXP6   0.846481725
-#define  EXP12  0.920044415
-#define  EXP180 0.994459848
+#include "lim.rload.h"
 
 float k_hz;
 static FILE *lim_popen(char **, char *);
@@ -82,7 +76,7 @@ loadIndex(void)
     li[R15M].exchthreshold += 0.03*(myHostPtr->statInfo.maxCpus - 1 );
 }
 
-static void
+void
 smooth(float *val, float instant, float factor)
 {
     (*val) = ((*val) * factor) + (instant * (1 - factor));
@@ -216,9 +210,11 @@ readLoad(int kernelPerm)
     TIMEIT(0, swap = getswap(), "getswap");
     TIMEIT(0, myHostPtr->loadIndex[TMP] = tmpspace(), "tmpspace");
     TIMEIT(0, myHostPtr->loadIndex[MEM] = realMem(0.0), "realMem");
+#if defined(__sun__)
     /* Start the next load collector.
      */
     runLoadCollector();
+#endif
 checkOverRide:
     if (overRide[UT] < INFINIT_LOAD)
         cpu_usage = overRide[UT];
@@ -340,7 +336,9 @@ checkExchange:
     myHostPtr->loadMask = 0;
 
     TIMEIT(0, sendLoad(), "sendLoad()");
+#if defined(__sun__)
     runLoadCollector();
+#endif
 
     for(i = 0; i < allInfo.numIndx; i++) {
 

@@ -78,14 +78,14 @@ scan_procs(void)
 
     closedir(dir);
 
-    logProcessInfo(void)
+    logProcessInfo();
 
     return 0;
 }
 
 /* logProcessInfo()
  */
-static void
+void
 logProcessInfo(void)
 {
     int i;

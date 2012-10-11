@@ -19,13 +19,19 @@
  *
  */
 
-#include "lim.common.h"
+#include "lim.h"
+#include "lim.rload.h"
 
 #include <sys/sysmacros.h>
 #include <sys/statvfs.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <math.h>
+
+#define SWP_INTVL_CNT 45/exchIntvl
+#define TMP_INTVL_CNT 120/exchIntvl
+#define PAGE_INTVL_CNT 120/exchIntvl
 
 #define  CPUSTATES 4
 #define ut_name   ut_user
@@ -39,10 +45,10 @@ static long long int swap_mem, free_swap;
 static double prev_time = 0, prev_idle = 0;
 static double prev_cpu_user, prev_cpu_nice, prev_cpu_sys, prev_cpu_idle;
 static unsigned long    prevRQ;
-static int getPage(double *page_in, double *page_out, bool_t isPaging);
-static int readMeminfo(void);
+int getPage(double *page_in, double *page_out, bool_t isPaging);
+int readMeminfo(void);
 
-static int
+int
 numCpus(void)
 {
     int cpu_number;
@@ -69,8 +75,7 @@ numCpus(void)
     return cpu_number;
 }
 
-static float queueLength();
-static int
+int
 queueLengthEx(float *r15s, float *r1m, float *r15m)
 {
 #define LINUX_LDAV_FILE "/proc/loadavg"
@@ -106,7 +111,7 @@ queueLengthEx(float *r15s, float *r1m, float *r15m)
     return 0;
 }
 
-static float
+float
 queueLength(void)
 {
     float ql;
@@ -163,8 +168,8 @@ queueLength(void)
     return ql;
 }
 
-static void
-cpuTime (double *itime, double *etime)
+void
+cpuTime (float *itime, float *etime)
 {
     double ttime;
     int stat_fd;
@@ -203,7 +208,7 @@ cpuTime (double *itime, double *etime)
     return;
 }
 
-static int
+int
 realMem(float extrafactor)
 {
     int realmem;
@@ -221,7 +226,7 @@ realMem(float extrafactor)
     return(realmem);
 }
 
-static float
+float
 tmpspace(void)
 {
     static float tmps = 0.0;
@@ -249,7 +254,7 @@ tmpspace(void)
 
 }
 
-static float
+float
 getswap(void)
 {
     static short tmpcnt;
@@ -269,7 +274,7 @@ getswap(void)
     return swap;
 }
 
-static float
+float
 getpaging(float etime)
 {
     static float smoothpg = 0.0;
@@ -297,7 +302,7 @@ getpaging(float etime)
     return smoothpg;
 }
 
-static float
+float
 getIoRate(float etime)
 {
     float kbps;
@@ -330,7 +335,7 @@ getIoRate(float etime)
     return smoothio;
 }
 
-static int
+int
 readMeminfo(void)
 {
     FILE *f;
@@ -368,6 +373,8 @@ readMeminfo(void)
 
     return 0;
 }
+
+extern float k_hz;
 
 void
 initReadLoad(int checkMode, int *kernelPerm)
@@ -487,7 +494,7 @@ getHostModel(void)
     return model;
 }
 
-static int
+int
 getPage(double *page_in, double *page_out,bool_t isPaging)
 {
     FILE *f;
