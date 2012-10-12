@@ -25,7 +25,7 @@ kill_daemons()
 
 
 # Process the requested operation.
-case "$opcode" in
+case "$1" in
   'stop')
         echo "Stopping daemons..."
         kill_daemons
