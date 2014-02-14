@@ -1,24 +1,18 @@
 #
 # openlava project
 #
-# Copyright (C) 2011-2012 David Bigagli
+# Copyright (C) 2011-2013 David Bigagli
 #
-AC_INIT(openlava, 2.1)
+AC_INIT(openlava, 2.2)
 AC_CONFIG_HEADERS(config.h)
-AC_PREFIX_DEFAULT([/opt/openlava-2.1])
-AC_DEFINE(_OPENLAVA_PROJECT_, "openlava project 2.1", "Set project string in binaries.")
-AC_DEFINE(OPENLAVA_VERSION, 20, "Current openlava version.")
-#AC_DEFINE(REL_DATE, "Jan 31 2012", "Set the release date.")
-
-# Set some cluster configuration variables .
-AC_SUBST([openlavadmin], [openlava])
-AC_ARG_VAR([openlavaadmin], "")
-AC_SUBST([openlavacluster], [openlava])
-AC_ARG_VAR([openlavacluster], "")
+AC_PREFIX_DEFAULT([/opt/openlava-2.2])
+AC_DEFINE(_OPENLAVA_PROJECT_, "openlava project 2.2", "Set project string in binaries.")
+AC_DEFINE(OPENLAVA_VERSION, 22, "Current openlava version.")
+#AC_DEFINE(REL_DATE, "Nov 11 2013", "Set the release date.")
 
 # Non Linux support
 AC_CANONICAL_SYSTEM
-AM_CONDITIONAL([CYGWIN], [false]) 
+AM_CONDITIONAL([CYGWIN], [false])
 AM_CONDITIONAL([SOLARIS], [false])
 case "${target_os}" in
   *cygwin*)
@@ -31,11 +25,11 @@ esac
 AM_INIT_AUTOMAKE
 
 # Experimental scheduling module
-# Leave for future 
+# Leave for future
 #AM_CONDITIONAL([SCHED_EXPERIMENTAL], [false])
 
 # Clean output if possible
-#m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 # Check for programs
 AC_PROG_CC
@@ -48,10 +42,13 @@ AC_PROG_MAKE_SET
 
 # Force warnings on for gcc
 if test "x$ac_compiler_gnu" = xyes; then
-    CFLAGS="$CFLAGS -Wall"
+    CFLAGS="$CFLAGS -Wall -fPIC"
 fi
 
-AC_CHECK_HEADERS(ncurses.h,[cf_cv_ncurses_header="ncurses.h"])
+AC_CHECK_HEADERS(ncurses.h,[cf_cv_ncurses_header="ncurses.h"], [
+ AC_MSG_ERROR([cannot build openlava without ncurses])
+])
+
 # Check for tcl, we try tcl and all 8.X versions
 AC_CHECK_HEADERS([tcl.h], [], [
  AC_CHECK_HEADERS([tcl/tcl.h], [], [
@@ -107,6 +104,18 @@ AC_CHECK_LIB(ncurses, wgetstr, [],[
 
 AC_FUNC_MKTIME
 
+# Set some cluster configuration variables .
+AC_ARG_VAR([openlavaadmin], [Username of the openlava admin])
+AC_ARG_VAR([openlavacluster], [Name of the cluster])
+# Set some defaults.
+: ${openlavaadmin:=openlava}
+: ${openlavacluster:=openlava}
+AC_SUBST([openlavaadmin])
+AC_SUBST([openlavacluster])
+AC_MSG_RESULT([username for openlava admin ... ${openlavaadmin}])
+AC_MSG_RESULT([name for openlava cluster ... ${openlavacluster}])
+
+
 AC_CONFIG_FILES([
 	Makefile                 \
 	config/Makefile          \
@@ -138,7 +147,7 @@ AC_CONFIG_FILES([
 	config/lsb.params        \
 	config/lsb.queues        \
 	config/lsb.users         \
-	config/lsf.cluster.openlava \
+	config/lsf.cluster.${openlavacluster}:config/lsf.cluster.openlava.in \
 	config/lsf.shared        \
 	config/lsf.task          \
 	config/openlava.csh      \
@@ -146,7 +155,9 @@ AC_CONFIG_FILES([
 	config/openlava.setup    \
 	config/openlava.sh       \
 	config/svc-openlava      \
-	examples/Makefile]
+	examples/Makefile],,
+
+        [openlavacluster=$openlavacluster]
 )
 
 AC_OUTPUT
